@@ -51,6 +51,7 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["B", "E", "F", "I", "N", "RUF", "SIM", "UP"]
+ignore = ["N812"]
 
 [tool.ruff.lint.per-file-ignores]
 "**/tests/**" = ["S101"]
@@ -58,6 +59,6 @@ select = ["B", "E", "F", "I", "N", "RUF", "SIM", "UP"]
 [tool.pyright]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
+reportUnknownMemberType = false
 include = ["packages/*/src", "packages/*/tests", "tests"]
 exclude = ["runs", "data", ".venv"]
-
