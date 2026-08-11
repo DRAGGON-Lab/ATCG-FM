@@ -7,12 +7,13 @@ from functools import partial
 from typing import cast
 
 import torch
+from torch.nn import functional as F
+from torch.utils.data import DataLoader
+
 from atcg.models import GenomicLanguageModel
 from atcg.runtime import CausalBatch, collate_examples
 from atcg.runtime.batching import TARGET_IGNORE_ID, SequenceDatasetAdapter
 from atcg.sequence import LanguageModelExample
-from torch.nn import functional as F
-from torch.utils.data import DataLoader
 
 
 @dataclass(frozen=True, slots=True)

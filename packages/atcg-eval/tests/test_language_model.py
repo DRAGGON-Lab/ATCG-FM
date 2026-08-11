@@ -1,6 +1,7 @@
 import math
 
 import torch
+
 from atcg.eval import evaluate_language_model
 from atcg.models import GenomicLanguageModel, attention_tiny
 from atcg.sequence import CausalWindowDataset, FixedAlphabetTokenizer, SequenceRecord

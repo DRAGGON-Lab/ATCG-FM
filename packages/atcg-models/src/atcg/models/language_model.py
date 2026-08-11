@@ -1,9 +1,10 @@
 """Autoregressive genomic language model."""
 
-from atcg.models.block import MixerBlock
-from atcg.models.config import ModelConfig
 from torch import Tensor, nn
 from torch.nn import functional as F
+
+from atcg.models.block import MixerBlock
+from atcg.models.config import ModelConfig
 
 
 class GenomicLanguageModel(nn.Module):

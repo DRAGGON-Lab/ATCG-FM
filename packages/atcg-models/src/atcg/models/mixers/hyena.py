@@ -1,12 +1,13 @@
 """Readable Hyena-style gated convolution operators."""
 
+from torch import Tensor, nn
+
 from atcg.models.mixers.base import SequenceMixer
 from atcg.models.mixers.convolution import (
     CausalDepthwiseConv1d,
     ImplicitLongFilter,
     RegularizedCausalConv1d,
 )
-from torch import Tensor, nn
 
 
 class _HyenaReference(SequenceMixer):

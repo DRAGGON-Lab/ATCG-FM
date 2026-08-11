@@ -1,4 +1,5 @@
 import pytest
+
 from atcg.models import MixerSpec, ModelConfig, hybrid_tiny
 
 

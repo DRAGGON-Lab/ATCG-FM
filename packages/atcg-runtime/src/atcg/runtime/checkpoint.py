@@ -7,9 +7,10 @@ from pathlib import Path
 from typing import cast
 
 import torch
+from torch.optim import Optimizer
+
 from atcg.models import GenomicLanguageModel, ModelConfig
 from atcg.runtime.training_state import TrainingState
-from torch.optim import Optimizer
 
 CHECKPOINT_SCHEMA_VERSION = 1
 

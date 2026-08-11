@@ -1,10 +1,11 @@
 from pathlib import Path
 
 import torch
+from torch.optim import AdamW
+
 from atcg.models import GenomicLanguageModel, attention_tiny
 from atcg.runtime import CausalBatch, Trainer, TrainingConfig, fit
 from atcg.sequence import CausalWindowDataset, FixedAlphabetTokenizer, SequenceRecord
-from torch.optim import AdamW
 
 
 def _training_fixture() -> tuple[

@@ -5,10 +5,11 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 
 import torch
-from atcg.models import GenomicLanguageModel
-from atcg.sequence import Tokenizer
 from torch import Tensor
 from torch.nn import functional as F
+
+from atcg.models import GenomicLanguageModel
+from atcg.sequence import Tokenizer
 
 
 @dataclass(frozen=True, slots=True)

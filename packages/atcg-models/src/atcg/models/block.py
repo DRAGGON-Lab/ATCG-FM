@@ -1,9 +1,10 @@
 """Residual decoder block with an interchangeable sequence mixer."""
 
-from atcg.models.config import MixerSpec
-from atcg.models.mixers import build_mixer
 from torch import Tensor, nn
 from torch.nn import functional as F
+
+from atcg.models.config import MixerSpec
+from atcg.models.mixers import build_mixer
 
 
 class SwiGLU(nn.Module):

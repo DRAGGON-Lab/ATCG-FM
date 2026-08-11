@@ -1,4 +1,5 @@
 import torch
+
 from atcg.models.mixers.convolution import (
     explicit_causal_convolution,
     fft_causal_convolution,

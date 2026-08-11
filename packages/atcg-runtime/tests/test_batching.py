@@ -1,4 +1,5 @@
 import torch
+
 from atcg.runtime import collate_examples
 from atcg.runtime.batching import TARGET_IGNORE_ID
 from atcg.sequence import LanguageModelExample

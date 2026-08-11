@@ -1,5 +1,6 @@
 import pytest
 import torch
+
 from atcg.models import GenomicLanguageModel, ModelConfig, attention_tiny, hybrid_tiny
 
 MODEL_CONFIGS = [

@@ -15,6 +15,12 @@ from pathlib import Path
 from typing import Literal, cast
 
 import torch
+from torch import Tensor
+from torch.nn import functional as F
+from torch.nn.utils import clip_grad_norm_
+from torch.optim import AdamW, Optimizer
+from torch.utils.data import DataLoader
+
 from atcg.models import GenomicLanguageModel
 from atcg.runtime.batching import (
     TARGET_IGNORE_ID,
@@ -24,11 +30,6 @@ from atcg.runtime.batching import (
 )
 from atcg.runtime.training_state import TrainingState
 from atcg.sequence import LanguageModelExample
-from torch import Tensor
-from torch.nn import functional as F
-from torch.nn.utils import clip_grad_norm_
-from torch.optim import AdamW, Optimizer
-from torch.utils.data import DataLoader
 
 Precision = Literal["float32", "bfloat16"]
 

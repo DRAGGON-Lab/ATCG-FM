@@ -1,9 +1,10 @@
 """Causal multi-head attention using PyTorch's native SDPA dispatch."""
 
 import torch
-from atcg.models.mixers.base import SequenceMixer
 from torch import Tensor, nn
 from torch.nn import functional as F
+
+from atcg.models.mixers.base import SequenceMixer
 
 
 def _apply_rotary(hidden_states: Tensor, inverse_frequencies: Tensor) -> Tensor:

@@ -2,9 +2,10 @@ from pathlib import Path
 
 import pytest
 import torch
+from torch.optim import AdamW
+
 from atcg.models import GenomicLanguageModel, attention_tiny
 from atcg.runtime import TrainingState, load_checkpoint, save_checkpoint
-from torch.optim import AdamW
 
 
 def _model() -> GenomicLanguageModel:

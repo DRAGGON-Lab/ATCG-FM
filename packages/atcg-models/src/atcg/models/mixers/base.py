@@ -2,8 +2,9 @@
 
 from abc import ABC, abstractmethod
 
-from atcg.models.config import MixerSpec
 from torch import Tensor, nn
+
+from atcg.models.config import MixerSpec
 
 
 class SequenceMixer(nn.Module, ABC):

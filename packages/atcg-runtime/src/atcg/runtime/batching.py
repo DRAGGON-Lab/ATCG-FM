@@ -5,9 +5,10 @@ from dataclasses import dataclass
 from typing import Self
 
 import torch
-from atcg.sequence import LanguageModelExample
 from torch import Tensor
 from torch.utils.data import Dataset
+
+from atcg.sequence import LanguageModelExample
 
 TARGET_IGNORE_ID = -100
 

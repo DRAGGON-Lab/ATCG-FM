@@ -1,4 +1,5 @@
 import pytest
+
 from atcg.sequence import ByteTokenizer, FixedAlphabetTokenizer
 
 

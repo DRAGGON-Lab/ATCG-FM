@@ -1,5 +1,6 @@
 import pytest
 import torch
+
 from atcg.models import MixerKind, MixerSpec
 from atcg.models.mixers import build_mixer
 

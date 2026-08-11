@@ -1,6 +1,7 @@
 import math
 
 import torch
+
 from atcg.models import GenomicLanguageModel, attention_tiny
 from atcg.runtime import generate, score_sequence
 from atcg.sequence import FixedAlphabetTokenizer
