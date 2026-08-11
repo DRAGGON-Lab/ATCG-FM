@@ -1,0 +1,26 @@
+.DS_Store
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.coverage
+coverage.xml
+htmlcov/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Local datasets and experiment artifacts
+data/raw/
+data/interim/
+data/processed/
+runs/
+checkpoints/
+artifacts/
+
+# Notebook state
+.ipynb_checkpoints/
+

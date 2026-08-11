@@ -1,0 +1,63 @@
+[project]
+name = "atcg-fm-workspace"
+version = "0.1.0"
+description = "Research workspace for genomic foundation models"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "atcg-eval",
+    "atcg-models",
+    "atcg-runtime",
+    "atcg-sequence",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+atcg-eval = { workspace = true }
+atcg-models = { workspace = true }
+atcg-runtime = { workspace = true }
+atcg-sequence = { workspace = true }
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.400",
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "ruff>=0.11",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-config --strict-markers"
+testpaths = ["packages", "tests"]
+markers = [
+    "slow: tests that are too expensive for the default suite",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["atcg"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "N", "RUF", "SIM", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["S101"]
+
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+include = ["packages/*/src", "packages/*/tests", "tests"]
+exclude = ["runs", "data", ".venv"]
+
