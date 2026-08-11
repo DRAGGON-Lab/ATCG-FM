@@ -31,7 +31,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "-ra --strict-config --strict-markers"
+addopts = "-ra --import-mode=importlib --strict-config --strict-markers"
 testpaths = ["packages", "tests"]
 markers = [
     "slow: tests that are too expensive for the default suite",

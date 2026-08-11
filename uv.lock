@@ -17,6 +17,7 @@ version = "0.1.0"
 source = { editable = "packages/atcg-eval" }
 dependencies = [
     { name = "atcg-models" },
+    { name = "atcg-runtime" },
     { name = "atcg-sequence" },
     { name = "torch" },
 ]
@@ -24,6 +25,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "atcg-models", editable = "packages/atcg-models" },
+    { name = "atcg-runtime", editable = "packages/atcg-runtime" },
     { name = "atcg-sequence", editable = "packages/atcg-sequence" },
     { name = "torch", specifier = ">=2.6,<3" },
 ]
