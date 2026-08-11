@@ -120,3 +120,18 @@ def load_checkpoint(
         training_state=training_state,
         metadata=metadata,
     )
+
+
+def load_model_checkpoint(
+    path: str | Path,
+    *,
+    device: str | torch.device = "cpu",
+) -> tuple[GenomicLanguageModel, LoadedCheckpoint]:
+    """Instantiate and strictly restore a model from its recorded configuration."""
+
+    loaded = load_checkpoint(path, map_location="cpu")
+    model = GenomicLanguageModel(loaded.model_config)
+    loaded = load_checkpoint(path, model=model, map_location="cpu")
+    model.to(device)
+    model.eval()
+    return model, loaded

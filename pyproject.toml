@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Research workspace for genomic foundation models"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "atcg-cli",
     "atcg-eval",
     "atcg-models",
     "atcg-runtime",
@@ -14,13 +15,22 @@ dependencies = [
 package = false
 
 [tool.uv.sources]
+atcg-cli = { workspace = true }
 atcg-eval = { workspace = true }
 atcg-models = { workspace = true }
 atcg-runtime = { workspace = true }
 atcg-sequence = { workspace = true }
+torch = [
+    { index = "pytorch-cpu", marker = "sys_platform == 'linux'" },
+]
 
 [tool.uv.workspace]
 members = ["packages/*"]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
 
 [dependency-groups]
 dev = [
