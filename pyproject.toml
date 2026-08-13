@@ -5,6 +5,7 @@ description = "Research workspace for genomic foundation models"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "atcg-cli",
+    "atcg-data",
     "atcg-eval",
     "atcg-models",
     "atcg-runtime",
@@ -16,6 +17,7 @@ package = false
 
 [tool.uv.sources]
 atcg-cli = { workspace = true }
+atcg-data = { workspace = true }
 atcg-eval = { workspace = true }
 atcg-models = { workspace = true }
 atcg-runtime = { workspace = true }

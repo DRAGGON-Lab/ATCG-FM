@@ -11,9 +11,10 @@ Evo 2-inspired hybrid mixer schedule.
 
 ## Workspace
 
-The uv workspace contains five packages:
+The uv workspace contains six packages:
 
 - `atcg-cli`: command-line training, evaluation, scoring, and generation.
+- `atcg-data`: read-only access to the shared GCS bucket and its Parquet datasets.
 - `atcg-sequence`: genomic sequence representation, tokenization, and datasets.
 - `atcg-models`: PyTorch model components and sequence mixers.
 - `atcg-runtime`: training, checkpointing, scoring, and generation.
@@ -33,6 +34,8 @@ guessed in the base environment.
 
 Raw datasets, checkpoints, and local run artifacts are deliberately excluded from Git.
 Tracked dataset manifests and finalized research reports will record their provenance.
+See the [dataset storage notes](docs/architecture/data.md) for the bucket layout and
+portable transfer commands.
 
 ## Tiny end-to-end run
 
