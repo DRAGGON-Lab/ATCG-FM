@@ -19,7 +19,7 @@ def test_checkpoint_round_trip_restores_exact_logits_and_state(tmp_path: Path) -
     model = _model()
     optimizer = AdamW(model.parameters(), lr=1e-3)
     inputs = torch.randint(0, model.config.vocab_size, (2, 6))
-    original = model(inputs).detach()
+    original = model(inputs).logits.detach()
     path = save_checkpoint(
         tmp_path / "checkpoint.pt",
         model=model,
@@ -36,9 +36,12 @@ def test_checkpoint_round_trip_restores_exact_logits_and_state(tmp_path: Path) -
         optimizer=restored_optimizer,
     )
 
-    torch.testing.assert_close(restored_model(inputs), original)
+    torch.testing.assert_close(restored_model(inputs).logits, original)
     assert loaded.training_state == TrainingState(step=3, tokens_seen=72)
     assert loaded.metadata == {"study": "round-trip"}
+    assert loaded.model_interface == "explicit_block_state_v1"
+    assert loaded.training_sequence_format == "ordered_segment_causal_v1"
+    assert loaded.stream_state is None
 
 
 def test_checkpoint_rejects_a_different_model_configuration(tmp_path: Path) -> None:
@@ -49,3 +52,13 @@ def test_checkpoint_rejects_a_different_model_configuration(tmp_path: Path) -> N
 
     with pytest.raises(ValueError, match="does not match"):
         load_checkpoint(path, model=incompatible)
+
+
+def test_checkpoint_rejects_an_older_model_schema(tmp_path: Path) -> None:
+    path = save_checkpoint(tmp_path / "checkpoint.pt", model=_model())
+    payload = torch.load(path, weights_only=True)
+    payload["schema_version"] = 2
+    torch.save(payload, path)
+
+    with pytest.raises(ValueError, match="unsupported checkpoint schema 2"):
+        load_checkpoint(path)

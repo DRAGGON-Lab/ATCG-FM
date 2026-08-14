@@ -1,8 +1,14 @@
 from pathlib import Path
 
-from atcg.eval import evaluate_language_model
 from atcg.models import GenomicLanguageModel, hybrid_tiny
-from atcg.runtime import TrainingConfig, fit, generate, load_model_checkpoint, score_sequence
+from atcg.runtime import (
+    TrainingConfig,
+    fit,
+    generate,
+    load_model_checkpoint,
+    score_sequence,
+    validate_causal_language_model,
+)
 from atcg.sequence import CausalWindowDataset, FixedAlphabetTokenizer, SequenceRecord
 
 
@@ -35,7 +41,7 @@ def test_hybrid_training_to_inference_vertical_slice(tmp_path: Path) -> None:
     )
     assert run.checkpoint_path is not None
     restored, loaded = load_model_checkpoint(run.checkpoint_path)
-    metrics = evaluate_language_model(restored, dataset, pad_id=tokenizer.pad_id)
+    metrics = validate_causal_language_model(restored, dataset, pad_id=tokenizer.pad_id)
     score = score_sequence(restored, tokenizer, "ACGT")
     generated = generate(
         restored,

@@ -12,7 +12,9 @@ from torch.optim import Optimizer
 from atcg.models import GenomicLanguageModel, ModelConfig
 from atcg.runtime.training_state import TrainingState
 
-CHECKPOINT_SCHEMA_VERSION = 1
+CHECKPOINT_SCHEMA_VERSION = 3
+MODEL_INTERFACE = "explicit_block_state_v1"
+TRAINING_SEQUENCE_FORMAT = "ordered_segment_causal_v1"
 
 
 @dataclass(frozen=True, slots=True)
@@ -22,6 +24,9 @@ class LoadedCheckpoint:
     model_config: ModelConfig
     training_state: TrainingState
     metadata: Mapping[str, str]
+    model_interface: str
+    training_sequence_format: str
+    stream_state: Mapping[str, object] | None
 
 
 def save_checkpoint(
@@ -30,6 +35,7 @@ def save_checkpoint(
     model: GenomicLanguageModel,
     optimizer: Optimizer | None = None,
     training_state: TrainingState | None = None,
+    stream_state: Mapping[str, object] | None = None,
     metadata: Mapping[str, str] | None = None,
 ) -> Path:
     """Atomically save trusted training state using PyTorch's weights-only types."""
@@ -39,10 +45,13 @@ def save_checkpoint(
     temporary = destination.with_name(f".{destination.name}.tmp")
     payload: dict[str, object] = {
         "schema_version": CHECKPOINT_SCHEMA_VERSION,
+        "model_interface": MODEL_INTERFACE,
+        "training_sequence_format": TRAINING_SEQUENCE_FORMAT,
         "model_config": model.config.to_dict(),
         "model_state": model.state_dict(),
         "optimizer_state": optimizer.state_dict() if optimizer is not None else None,
         "training_state": asdict(training_state or TrainingState()),
+        "stream_state": dict(stream_state) if stream_state is not None else None,
         "torch_rng_state": torch.get_rng_state(),
         "metadata": dict(metadata or {}),
     }
@@ -71,6 +80,12 @@ def load_checkpoint(
     payload = cast(dict[str, object], raw_payload)
     if payload.get("schema_version") != CHECKPOINT_SCHEMA_VERSION:
         raise ValueError(f"unsupported checkpoint schema {payload.get('schema_version')!r}")
+    if payload.get("model_interface") != MODEL_INTERFACE:
+        raise ValueError(f"unsupported model interface {payload.get('model_interface')!r}")
+    if payload.get("training_sequence_format") != TRAINING_SEQUENCE_FORMAT:
+        raise ValueError(
+            f"unsupported training sequence format {payload.get('training_sequence_format')!r}"
+        )
 
     raw_config = payload.get("model_config")
     if not isinstance(raw_config, dict):
@@ -115,10 +130,22 @@ def load_checkpoint(
             raise ValueError("checkpoint metadata must contain string keys and values")
         metadata[key] = value
 
+    raw_stream_state = payload.get("stream_state")
+    stream_state: Mapping[str, object] | None
+    if raw_stream_state is None:
+        stream_state = None
+    elif isinstance(raw_stream_state, dict):
+        stream_state = cast(dict[str, object], raw_stream_state)
+    else:
+        raise ValueError("checkpoint stream state must be a mapping or null")
+
     return LoadedCheckpoint(
         model_config=model_config,
         training_state=training_state,
         metadata=metadata,
+        model_interface=MODEL_INTERFACE,
+        training_sequence_format=TRAINING_SEQUENCE_FORMAT,
+        stream_state=stream_state,
     )
 
 

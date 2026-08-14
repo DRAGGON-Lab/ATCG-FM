@@ -1,0 +1,29 @@
+[project]
+name = "atcg-eval-evo2-runtime"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "evo2",
+    "flash-attn==2.8.0.post2; sys_platform == 'linux'",
+    "gfmbench-api",
+    "numpy>=2.0",
+    "scikit-learn>=1.6",
+    "torch==2.7.1",
+]
+
+[tool.uv]
+package = false
+no-build-isolation-package = ["flash-attn"]
+
+[tool.uv.workspace]
+members = []
+
+[tool.uv.sources]
+evo2 = { git = "https://github.com/arcinstitute/evo2.git", rev = "53f195997257c56c00e5ef8d33a54f5baad143a6" }
+gfmbench-api = { git = "https://github.com/NVIDIA/GFMBench-api.git", rev = "ce1be5d98c37b9f9ceedc32b254fe38668f989d8" }
+torch = [{ index = "pytorch-cu128", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true

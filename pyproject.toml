@@ -6,7 +6,6 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "atcg-cli",
     "atcg-data",
-    "atcg-eval",
     "atcg-models",
     "atcg-runtime",
     "atcg-sequence",
@@ -28,6 +27,7 @@ torch = [
 
 [tool.uv.workspace]
 members = ["packages/*"]
+exclude = ["environments/models/*"]
 
 [[tool.uv.index]]
 name = "pytorch-cpu"
@@ -41,10 +41,20 @@ dev = [
     "pytest-cov>=6.0",
     "ruff>=0.11",
 ]
+eval = [
+    "atcg-eval",
+]
 
 [tool.pytest.ini_options]
 addopts = "-ra --import-mode=importlib --strict-config --strict-markers"
-testpaths = ["packages", "tests"]
+testpaths = [
+    "packages/atcg-cli/tests",
+    "packages/atcg-data/tests",
+    "packages/atcg-models/tests",
+    "packages/atcg-runtime/tests",
+    "packages/atcg-sequence/tests",
+    "tests",
+]
 markers = [
     "slow: tests that are too expensive for the default suite",
 ]

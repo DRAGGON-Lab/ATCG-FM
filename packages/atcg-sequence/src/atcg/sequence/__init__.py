@@ -1,6 +1,11 @@
 """Genomic sequence representations, tokenizers, and datasets."""
 
-from atcg.sequence.datasets import CausalWindowDataset, LanguageModelExample
+from atcg.sequence.datasets import (
+    CausalWindowDataset,
+    LanguageModelExample,
+    LanguageModelHorizon,
+    OrderedCausalStreamDataset,
+)
 from atcg.sequence.fasta import parse_fasta, read_fasta
 from atcg.sequence.records import SequenceRecord
 from atcg.sequence.tokenizers import ByteTokenizer, FixedAlphabetTokenizer, Tokenizer
@@ -11,6 +16,8 @@ __all__ = [
     "CausalWindowDataset",
     "FixedAlphabetTokenizer",
     "LanguageModelExample",
+    "LanguageModelHorizon",
+    "OrderedCausalStreamDataset",
     "SequenceRecord",
     "Tokenizer",
     "parse_fasta",

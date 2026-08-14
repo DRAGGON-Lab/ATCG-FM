@@ -8,3 +8,7 @@ Development results from one seed are diagnostic. Comparative claims should repo
 least three seeds, uncertainty, training tokens, parameter counts, and whether the study
 matched data, compute, or elapsed time.
 
+Native architecture comparisons must declare `substitution_unit: mixer` or
+`substitution_unit: block`. Mixer comparisons retain `StandardMixerBlock` and vary only its
+mixer. Block comparisons may replace the complete computational block. Report static
+trainable parameters and recurrent state per active stream separately.

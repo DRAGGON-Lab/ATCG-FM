@@ -1,19 +1,25 @@
 [project]
 name = "atcg-eval"
 version = "0.1.0"
-description = "Scientific evaluations for ATCG-FM"
+description = "Strict GFMBench-based evaluations for ATCG-FM"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "atcg-models",
     "atcg-runtime",
     "atcg-sequence",
+    "gfmbench-api",
+    "numpy>=2.0",
     "torch>=2.6,<3",
 ]
+
+[project.scripts]
+atcg-eval = "atcg.eval:main"
 
 [tool.uv.sources]
 atcg-models = { workspace = true }
 atcg-runtime = { workspace = true }
 atcg-sequence = { workspace = true }
+gfmbench-api = { git = "https://github.com/NVIDIA/GFMBench-api.git", rev = "ce1be5d98c37b9f9ceedc32b254fe38668f989d8" }
 
 [build-system]
 requires = ["hatchling>=1.27"]

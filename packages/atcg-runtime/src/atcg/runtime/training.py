@@ -107,6 +107,8 @@ class Trainer:
         gradient_clip_norm: float | None = 1.0,
         state: TrainingState | None = None,
     ) -> None:
+        if model.config.is_stateful:
+            raise ValueError("stateful architectures require StatefulTrainer")
         self.model = model
         self.optimizer = optimizer
         self.device = torch.device(device)
@@ -128,8 +130,8 @@ class Trainer:
             else nullcontext()
         )
         with autocast_context:
-            logits = self.model(local_batch.input_ids)
-            loss = causal_language_model_loss(logits, local_batch.target_ids)
+            output = self.model(local_batch.input_ids)
+            loss = causal_language_model_loss(output.logits, local_batch.target_ids)
         loss.backward()
         if self.gradient_clip_norm is None:
             gradient_norm = _gradient_norm(self.model.parameters())

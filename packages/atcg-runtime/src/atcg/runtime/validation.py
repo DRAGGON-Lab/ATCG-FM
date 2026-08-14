@@ -1,4 +1,4 @@
-"""Autoregressive language-model evaluation with explicit metric units."""
+"""Dataset-level validation for autoregressive training runs."""
 
 import math
 from collections.abc import Sequence
@@ -11,14 +11,18 @@ from torch.nn import functional as F
 from torch.utils.data import DataLoader
 
 from atcg.models import GenomicLanguageModel
-from atcg.runtime import CausalBatch, collate_examples
-from atcg.runtime.batching import TARGET_IGNORE_ID, SequenceDatasetAdapter
+from atcg.runtime.batching import (
+    TARGET_IGNORE_ID,
+    CausalBatch,
+    SequenceDatasetAdapter,
+    collate_examples,
+)
 from atcg.sequence import LanguageModelExample
 
 
 @dataclass(frozen=True, slots=True)
-class LanguageModelMetrics:
-    """Dataset-level causal prediction metrics."""
+class CausalValidationMetrics:
+    """Dataset-level causal prediction metrics in explicit units."""
 
     total_nll: float
     mean_nll: float
@@ -29,14 +33,14 @@ class LanguageModelMetrics:
     example_count: int
 
 
-def evaluate_language_model(
+def validate_causal_language_model(
     model: GenomicLanguageModel,
     dataset: Sequence[LanguageModelExample],
     *,
     pad_id: int,
     batch_size: int = 8,
     device: torch.device | str | None = None,
-) -> LanguageModelMetrics:
+) -> CausalValidationMetrics:
     """Evaluate each non-padding target exactly once without changing weights."""
 
     if not dataset:
@@ -63,7 +67,7 @@ def evaluate_language_model(
     with torch.inference_mode():
         for raw_batch in loader:
             batch = raw_batch.to(resolved_device)
-            logits = model(batch.input_ids)
+            logits = model(batch.input_ids).logits
             flat_logits = logits.reshape(-1, logits.shape[-1])
             flat_targets = batch.target_ids.reshape(-1)
             valid = flat_targets != TARGET_IGNORE_ID
@@ -80,7 +84,7 @@ def evaluate_language_model(
             token_count += int(valid.sum().item())
 
     mean_nll = total_nll / token_count
-    return LanguageModelMetrics(
+    return CausalValidationMetrics(
         total_nll=total_nll,
         mean_nll=mean_nll,
         bits_per_token=mean_nll / math.log(2.0),

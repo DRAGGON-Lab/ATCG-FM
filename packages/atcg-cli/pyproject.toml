@@ -4,7 +4,6 @@ version = "0.1.0"
 description = "Command-line workflows for ATCG-FM"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "atcg-eval",
     "atcg-models",
     "atcg-runtime",
     "atcg-sequence",
@@ -14,7 +13,6 @@ dependencies = [
 atcg = "atcg.cli:main"
 
 [tool.uv.sources]
-atcg-eval = { workspace = true }
 atcg-models = { workspace = true }
 atcg-runtime = { workspace = true }
 atcg-sequence = { workspace = true }
@@ -25,4 +23,3 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/atcg"]
-

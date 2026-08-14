@@ -2,12 +2,12 @@ import math
 
 import torch
 
-from atcg.eval import evaluate_language_model
 from atcg.models import GenomicLanguageModel, attention_tiny
+from atcg.runtime import validate_causal_language_model
 from atcg.sequence import CausalWindowDataset, FixedAlphabetTokenizer, SequenceRecord
 
 
-def test_language_model_evaluation_counts_only_real_targets() -> None:
+def test_causal_validation_counts_only_real_targets() -> None:
     tokenizer = FixedAlphabetTokenizer(alphabet="ACGT")
     dataset = CausalWindowDataset(
         [SequenceRecord(identifier="fixture", sequence="ACGTAC")],
@@ -27,7 +27,12 @@ def test_language_model_evaluation_counts_only_real_targets() -> None:
         )
     )
 
-    metrics = evaluate_language_model(model, dataset, pad_id=tokenizer.pad_id, batch_size=2)
+    metrics = validate_causal_language_model(
+        model,
+        dataset,
+        pad_id=tokenizer.pad_id,
+        batch_size=2,
+    )
 
     assert metrics.example_count == 2
     assert metrics.token_count == sum(len(example.target_ids) for example in dataset)

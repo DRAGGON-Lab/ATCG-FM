@@ -1,0 +1,26 @@
+[project]
+name = "atcg-eval-jepa-dna-runtime"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "gfmbench-api",
+    "numpy>=2.0",
+    "scikit-learn>=1.6",
+    "torch==2.6.0",
+    "transformers==4.57.1",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = []
+
+[tool.uv.sources]
+gfmbench-api = { git = "https://github.com/NVIDIA/GFMBench-api.git", rev = "ce1be5d98c37b9f9ceedc32b254fe38668f989d8" }
+torch = [{ index = "pytorch-cu124", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
