@@ -2,7 +2,7 @@
 name = "atcg-fm-workspace"
 version = "0.1.0"
 description = "Research workspace for genomic foundation models"
-requires-python = ">=3.12,<3.13"
+requires-python = ">=3.12,<3.14"
 dependencies = [
     "atcg-cli",
     "atcg-data",
@@ -68,6 +68,7 @@ show_missing = true
 skip_covered = true
 
 [tool.ruff]
+extend-exclude = ["notebooks/*.ipynb"]
 line-length = 100
 target-version = "py312"
 

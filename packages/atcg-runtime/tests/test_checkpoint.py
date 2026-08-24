@@ -62,3 +62,20 @@ def test_checkpoint_rejects_an_older_model_schema(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="unsupported checkpoint schema 2"):
         load_checkpoint(path)
+
+
+def test_checkpoint_round_trips_experiment_resume_state(tmp_path: Path) -> None:
+    path = save_checkpoint(
+        tmp_path / "resume.pt",
+        model=_model(),
+        grad_scaler_state={"scale": 1024.0},
+        experiment_state={"dataset_fingerprint": "abc", "global_batch_index": 7},
+    )
+
+    loaded = load_checkpoint(path)
+
+    assert loaded.grad_scaler_state == {"scale": 1024.0}
+    assert loaded.experiment_state == {
+        "dataset_fingerprint": "abc",
+        "global_batch_index": 7,
+    }

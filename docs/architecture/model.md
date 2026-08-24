@@ -53,11 +53,17 @@ state between horizons, and rejects duplicated stream identities within a batch.
 `Trainer` rejects stateful architectures so shuffled independent windows cannot silently
 invalidate a memory experiment.
 
-Checkpoint schema 3 binds checkpoints to the `explicit_block_state_v1` model interface and
-the `ordered_segment_causal_v1` execution format. A checkpoint may contain active stream
-states in addition to static model and optimizer parameters. Dataset cursor ownership is
-still a caller concern; an exact interrupted-run continuation must restore the matching
-ordered-data cursor alongside the checkpoint.
+`prepare_coordinate_splits` can reserve a context-sized guard between coordinate
+partitions. The hybrid Colab protocol uses 128-base guards for within-genome evaluation and
+keeps a second ANI-99 clade-held-out evaluation path. `validate_ordered_model` can report
+quality by stream-offset bins and can deliberately reset state at each segment for the
+TITANS memory ablation.
+
+Checkpoint schema 4 binds checkpoints to the `explicit_block_state_v1` model interface and
+the `ordered_segment_causal_v1` execution format. It may contain active stream states,
+gradient-scaler state, CUDA RNG state, and a fingerprinted ordered-data cursor in addition
+to static model and optimizer parameters. The loader retains schema-3 inference support;
+exact interrupted comparison training requires schema 4 and a matching dataset fingerprint.
 
 Independent-sequence inference is owned by `atcg-runtime`. Its shared forward path resets
 state per call, pads each stateful segment with an explicit validity mask, carries detached

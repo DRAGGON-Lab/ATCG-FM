@@ -12,7 +12,8 @@ from torch.optim import Optimizer
 from atcg.models import GenomicLanguageModel, ModelConfig
 from atcg.runtime.training_state import TrainingState
 
-CHECKPOINT_SCHEMA_VERSION = 3
+CHECKPOINT_SCHEMA_VERSION = 4
+READABLE_CHECKPOINT_SCHEMA_VERSIONS = frozenset({3, 4})
 MODEL_INTERFACE = "explicit_block_state_v1"
 TRAINING_SEQUENCE_FORMAT = "ordered_segment_causal_v1"
 
@@ -27,6 +28,8 @@ class LoadedCheckpoint:
     model_interface: str
     training_sequence_format: str
     stream_state: Mapping[str, object] | None
+    grad_scaler_state: Mapping[str, object] | None
+    experiment_state: Mapping[str, object] | None
 
 
 def save_checkpoint(
@@ -36,6 +39,8 @@ def save_checkpoint(
     optimizer: Optimizer | None = None,
     training_state: TrainingState | None = None,
     stream_state: Mapping[str, object] | None = None,
+    grad_scaler_state: Mapping[str, object] | None = None,
+    experiment_state: Mapping[str, object] | None = None,
     metadata: Mapping[str, str] | None = None,
 ) -> Path:
     """Atomically save trusted training state using PyTorch's weights-only types."""
@@ -53,6 +58,9 @@ def save_checkpoint(
         "training_state": asdict(training_state or TrainingState()),
         "stream_state": dict(stream_state) if stream_state is not None else None,
         "torch_rng_state": torch.get_rng_state(),
+        "cuda_rng_state": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None,
+        "grad_scaler_state": dict(grad_scaler_state) if grad_scaler_state is not None else None,
+        "experiment_state": dict(experiment_state) if experiment_state is not None else None,
         "metadata": dict(metadata or {}),
     }
     try:
@@ -72,13 +80,13 @@ def load_checkpoint(
     map_location: str | torch.device = "cpu",
     restore_rng: bool = False,
 ) -> LoadedCheckpoint:
-    """Load a checkpoint, optionally restoring model, optimizer, and CPU RNG state."""
+    """Load a checkpoint, optionally restoring model, optimizer, and available RNG state."""
 
     raw_payload = torch.load(Path(path), map_location=map_location, weights_only=True)
     if not isinstance(raw_payload, dict):
         raise ValueError("checkpoint payload must be a mapping")
     payload = cast(dict[str, object], raw_payload)
-    if payload.get("schema_version") != CHECKPOINT_SCHEMA_VERSION:
+    if payload.get("schema_version") not in READABLE_CHECKPOINT_SCHEMA_VERSIONS:
         raise ValueError(f"unsupported checkpoint schema {payload.get('schema_version')!r}")
     if payload.get("model_interface") != MODEL_INTERFACE:
         raise ValueError(f"unsupported model interface {payload.get('model_interface')!r}")
@@ -120,6 +128,13 @@ def load_checkpoint(
         if not isinstance(rng_state, torch.Tensor):
             raise ValueError("checkpoint CPU RNG state is invalid")
         torch.set_rng_state(rng_state.cpu())
+        cuda_rng_state = payload.get("cuda_rng_state")
+        if torch.cuda.is_available() and cuda_rng_state is not None:
+            if not isinstance(cuda_rng_state, list) or not all(
+                isinstance(value, torch.Tensor) for value in cuda_rng_state
+            ):
+                raise ValueError("checkpoint CUDA RNG state is invalid")
+            torch.cuda.set_rng_state_all(cuda_rng_state)
 
     raw_metadata = payload.get("metadata", {})
     if not isinstance(raw_metadata, dict):
@@ -139,6 +154,9 @@ def load_checkpoint(
     else:
         raise ValueError("checkpoint stream state must be a mapping or null")
 
+    grad_scaler_state = _optional_mapping(payload, "grad_scaler_state")
+    experiment_state = _optional_mapping(payload, "experiment_state")
+
     return LoadedCheckpoint(
         model_config=model_config,
         training_state=training_state,
@@ -146,7 +164,18 @@ def load_checkpoint(
         model_interface=MODEL_INTERFACE,
         training_sequence_format=TRAINING_SEQUENCE_FORMAT,
         stream_state=stream_state,
+        grad_scaler_state=grad_scaler_state,
+        experiment_state=experiment_state,
     )
+
+
+def _optional_mapping(payload: Mapping[str, object], name: str) -> Mapping[str, object] | None:
+    value = payload.get(name)
+    if value is None:
+        return None
+    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
+        raise TypeError(f"checkpoint {name} must be a string-keyed mapping or null")
+    return cast(dict[str, object], value)
 
 
 def load_model_checkpoint(

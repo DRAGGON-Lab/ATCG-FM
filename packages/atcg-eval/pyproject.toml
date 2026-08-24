@@ -2,7 +2,7 @@
 name = "atcg-eval"
 version = "0.1.0"
 description = "Strict GFMBench-based evaluations for ATCG-FM"
-requires-python = ">=3.12,<3.13"
+requires-python = ">=3.12,<3.14"
 dependencies = [
     "atcg-models",
     "atcg-runtime",

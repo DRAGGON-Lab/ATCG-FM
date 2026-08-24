@@ -2,7 +2,7 @@
 name = "atcg-sequence"
 version = "0.1.0"
 description = "Sequence and dataset primitives for ATCG-FM"
-requires-python = ">=3.12,<3.13"
+requires-python = ">=3.12,<3.14"
 dependencies = []
 
 [build-system]
@@ -11,4 +11,3 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/atcg"]
-

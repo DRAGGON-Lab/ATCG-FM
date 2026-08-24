@@ -20,6 +20,8 @@ The uv workspace contains six packages:
 - `atcg-runtime`: training, validation, checkpointing, scoring, and generation.
 - `atcg-eval`: strict, provenance-rich evaluation built on GFMBench-API.
 
+The core workspace supports Python 3.12 and 3.13.
+
 Install all development dependencies and run the test suite with:
 
 ```console
