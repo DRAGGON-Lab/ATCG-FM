@@ -49,7 +49,7 @@ Tracked dataset manifests and finalized research reports will record their prove
 See the [dataset storage notes](docs/architecture/data.md) for the bucket layout and
 portable transfer commands.
 
-## Tiny end-to-end run
+## E. coli dataset releases\n\nE. coli-related dataset acquisition, filtering, selection, coordinate splitting and release manifests are maintained in [Ecole](https://github.com/DRAGGON-Lab/Ecole). ATCG-FM consumes immutable FASTA/manifest releases without depending on Ecole during model training. Use the five-partition `ecoli-hybrid-v1-stage-small` contract documented in [Ecole](https://github.com/DRAGGON-Lab/Ecole/blob/main/docs/ATCG-FM.md). Existing training notebooks remain unchanged while an Ecole release is independently validated.\n\n## Tiny end-to-end run
 
 The checked-in FASTA fixture is synthetic and is only intended to validate the software
 path:
