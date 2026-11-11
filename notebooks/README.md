@@ -5,7 +5,7 @@ and must not contain the only implementation of a tokenizer, model, metric, or t
 
 ## Colab Transformer–TITANS hybrid pilot
 
-The numbered workflow reuses the shared `bacteria_titan_v1_ecoli_related_15gbp` corpus:
+Dataset creation is now owned by [Ecole](https://github.com/DRAGGON-Lab/Ecole). Use a published, checksum-verified Ecole release and record its manifest fingerprint before model training. The original `00_prepare_ecoli_dataset.ipynb` is retained temporarily for historical reference, but must not be used to publish new dataset versions. Ecole holds the extracted production pipeline and an archived notebook.\n\nThe numbered training workflow reuses the shared `bacteria_titan_v1_ecoli_related_15gbp` corpus:
 
 1. `00_prepare_ecoli_dataset.ipynb` selects high-quality, distinct ANI-99 groups and writes
    a 16M-base training set plus four 2M-base evaluation sets. Training genomes contribute
